@@ -1,1 +1,234 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Daily Brief</title></head><body style="font-family:sans-serif;padding:40px"><h1>Daily Brief</h1><p>Your first brief will appear here after the first run.</p></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Brief · Thursday, 26 November 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --ink: #0A0A0A;
+      --body: #262626;
+      --muted: #525252;
+      --rule: #E2E5EA;
+      --breaking: #D90429;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 36px 32px 84px;
+    }
+
+    .masthead {
+      border-top: 4px solid var(--ink);
+      border-bottom: 1px solid var(--ink);
+      padding: 16px 0 14px;
+      margin-bottom: 40px;
+    }
+
+    .masthead h1 {
+      margin: 0;
+      font-size: clamp(22px, 2.8vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .poster {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background: #0A0C10;
+    }
+
+    .poster.g1{background:linear-gradient(160deg,#1b2a41,#0A0C10)}.poster.g2{background:linear-gradient(160deg,#3a1c1c,#0A0C10)}.poster.g3{background:linear-gradient(160deg,#14332b,#0A0C10)}.poster.g4{background:linear-gradient(160deg,#2b2347,#0A0C10)}.poster.g5{background:linear-gradient(160deg,#3b2f14,#0A0C10)}.poster.g6{background:linear-gradient(160deg,#10333f,#0A0C10)}
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .story-link:hover .poster img { transform: scale(1.03); }
+
+    .poster-scrim {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 82% 62% at 14% 16%,
+        rgba(0, 0, 0, 0.44) 0%,
+        rgba(0, 0, 0, 0.14) 55%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      pointer-events: none;
+    }
+
+    .poster-top {
+      position: absolute;
+      top: 6.5%;
+      left: 6%;
+      right: 16%;
+      z-index: 2;
+    }
+
+    .kicker {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      margin-bottom: 10px;
+      line-height: 1;
+    }
+
+    .kicker-breaking { background: var(--breaking); color: #FFFFFF; }
+    .kicker-normal { background: #0A0A0A; color: #FFFFFF; }
+
+    .poster-headline {
+      margin: 0;
+      color: #FFFFFF;
+      font-size: clamp(23px, 2.5vw, 32px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.36);
+    }
+
+    .poster-brand {
+      position: absolute;
+      right: 5.5%;
+      bottom: 4.5%;
+      z-index: 2;
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+    }
+
+    .split-row {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 44px;
+      align-items: center;
+      padding-bottom: 44px;
+      margin-bottom: 44px;
+      border-bottom: 1px solid var(--rule);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .split-row.closing {
+      padding-top: 44px;
+      padding-bottom: 24px;
+      margin-bottom: 0;
+      border-top: 1px solid var(--rule);
+    }
+
+    .split-index {
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .split-index.breaking { color: var(--breaking); }
+
+    .split-copy-box {
+      border-left: 3px solid var(--ink);
+      padding-left: 22px;
+    }
+
+    .split-copy-box.breaking { border-left-color: var(--breaking); }
+
+    .pure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 44px;
+      row-gap: 44px;
+      margin-bottom: 44px;
+    }
+
+    .pure-entry {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .pure-body {
+      padding-top: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .story-copy {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.62;
+      color: var(--body);
+    }
+
+    .story-foot {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+    }
+
+    .story-source { font-weight: 600; color: var(--muted); }
+    .story-cta { font-weight: 700; color: var(--ink); }
+    .story-link:hover .story-cta { text-decoration: underline; text-underline-offset: 3px; }
+
+    @media (max-width: 767px) {
+      .shell { padding: 0 0 56px; }
+      .masthead { padding: 16px 20px 14px; margin-bottom: 0; }
+      .split-row, .split-row.closing {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0 0 28px;
+        margin-bottom: 0;
+        border-top: 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      .split-right, .pure-body { padding: 18px 20px 0; }
+      .split-index { display: none; }
+      .split-copy-box { border-left: 0; padding-left: 0; }
+      .pure-grid { grid-template-columns: 1fr; row-gap: 0; margin-bottom: 0; }
+      .pure-entry { padding-bottom: 28px; border-bottom: 1px solid var(--rule); }
+      .poster-headline { font-size: 27px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell"><header class="masthead"><h1>Thursday, 26 November 2026</h1></header>
+<a class="story-link split-row" href="https://www.theguardian.com/us-news/live/2026/nov/25/donald-trump-jensen-huang-nvidia-pardon-senate-hearing-iowa-abdul-el-sayed-latest-news-updates" target="_blank" rel="noopener noreferrer"><div class="poster g1"><img src="https://i.guim.co.uk/img/media/1ded0ee0250a7ae31faed7b6ee3dc216c3eee7d6/683_0_6827_5464/master/6827.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=a3e67bf3a7035af45285bc7c8dfd8e91" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-breaking">Breaking</span><h2 class="poster-headline">Chris Van Hollen picks up more support for Senate majority leader role ahead of Democrats vote next week – as it happened</h2></div><span class="poster-brand">The Guardian</span></div><div class="split-right"><div class="split-index breaking">01 &middot; Breaking</div><div class="split-copy-box breaking"><p class="story-copy">This live blog s now closed. Sign up for the Breaking News US email US trade representative Jamieson Greer claimed this morning that he did not expect the new proposed tariffs to rattle the global economy.</p><div class="story-foot"><span class="story-source">The Guardian &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></div></a>
+<section class="pure-grid"><a class="story-link pure-entry" href="https://www.bbc.co.uk/news/articles/c893r9ke5p97o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer"><div class="poster g3"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/cdd4/live/6fdb6db0-e946-11f1-8b2f-671485cea0be.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Business · Global</span><h2 class="poster-headline">US announces new tariffs on host of countries including China</h2></div><span class="poster-brand">BBC News</span></div><div class="pure-body"><p class="story-copy">The new levies would hit many of America&#x27;s biggest trading partners, including China and the EU.</p><div class="story-foot"><span class="story-source">BBC News &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://economictimes.indiatimes.com/markets/forex/rupee-falls-20-paise-to-92-40-against-us-dollar-in-early-trade/articleshow/136179591.cms" target="_blank" rel="noopener noreferrer"><div class="poster g4"><img src="https://img.etimg.com/photo/msid-136179591,imgsize-80530.cms" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Markets · India</span><h2 class="poster-headline">Rupee falls 20 paise to 92.40 against US dollar in early trade</h2></div><span class="poster-brand">Economic Times</span></div><div class="pure-body"><p class="story-copy">The rupee fell 20 paise to 92.40 against the US dollar in early trade. Higher crude oil prices and proposed tariffs by the US administration increased dollar demand.</p><div class="story-foot"><span class="story-source">Economic Times &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></section>
+<section class="pure-grid"><a class="story-link pure-entry" href="https://www.cnbc.com/2026/11/26/mispricing-risk-fund-managers-ai-volatility.html" target="_blank" rel="noopener noreferrer"><div class="poster g5"><img src="https://image.cnbcfm.com/api/v1/image/108268316-1771829545481-gettyimages-2201260900-omarques_24022025_phone_tech-4.jpeg?v=1771829556&amp;w=1920&amp;h=1080" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Investing · Global</span><h2 class="poster-headline">Beware higher correlation but nab high U.S. credit yields, fund managers say</h2></div><span class="poster-brand">CNBC</span></div><div class="pure-body"><p class="story-copy">The AI boom could trigger a recession, but data centers remain an attractive investment opportunity, a hedge fund manager said.</p><div class="story-foot"><span class="story-source">CNBC &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://economictimes.indiatimes.com/news/economy/foreign-trade/us-tariff-threat-indian-traders-urge-modi-to-hit-back-with-25-duty/articleshow/136178272.cms" target="_blank" rel="noopener noreferrer"><div class="poster g6"><img src="https://img.etimg.com/photo/msid-136178272,imgsize-133418.cms" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Economics · India</span><h2 class="poster-headline">US tariff threat: Indian traders urge Modi to hit back with 25% duty</h2></div><span class="poster-brand">Economic Times</span></div><div class="pure-body"><p class="story-copy">The Chamber of Trading Industry (CTI) has urged the government to consider imposing a 25 per cent retaliatory tariff on US goods if Washington proceeds with higher duties on Indian products, warning that the proposed measures…</p><div class="story-foot"><span class="story-source">Economic Times &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></section>
+<section class="pure-grid"><a class="story-link pure-entry" href="https://www.theguardian.com/business/2026/nov/25/uk-food-inflation-sharp-rise-next-year-mounting-cost-pressures-bank-of-england" target="_blank" rel="noopener noreferrer"><div class="poster g1"><img src="https://i.guim.co.uk/img/media/6dc206e833865c9dd5429c7d1b0d08abb0b3bfde/79_0_3491_2793/master/3491.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=d5c47df5247e5d854261cf1b7851501b" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Economics · Global</span><h2 class="poster-headline">UK food inflation could hit 5% next year, Bank of England says</h2></div><span class="poster-brand">The Guardian</span></div><div class="pure-body"><p class="story-copy">Sharp rise expected as cost pressures mount, with experts factoring in energy price cap hike and potential impact of El Niño Food price inflation in the UK could hit 5% next year, the Bank of England has said, despite rising less…</p><div class="story-foot"><span class="story-source">The Guardian &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://www.bbc.co.uk/news/articles/cwkgr38l2g9yo?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer"><div class="poster g2"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/2d43/live/3a3ebde0-e94d-11f1-bfb6-fd0f1685abfb.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Geopolitics · Global</span><h2 class="poster-headline">Macy&#x27;s postpones Thanksgiving parade due to severe weather</h2></div><span class="poster-brand">BBC News</span></div><div class="pure-body"><p class="story-copy">The was the first time ever that the iconic celebration was delayed because of storms. New York expects damaging winds and heavy rainfall over the Thanksgiving holiday.</p><div class="story-foot"><span class="story-source">BBC News &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></section>
+<section class="pure-grid"><a class="story-link pure-entry" href="https://www.thehindu.com/news/national/kerala/second-attempt-to-tranquilise-wild-tusker-chakkakompan-underway-in-chinnakkanal-keralam-forest-minister/article71745331.ece" target="_blank" rel="noopener noreferrer"><div class="poster g3"><img src="https://th-i.thgim.com/public/news/national/kerala/jbsjxt/article71745343.ece/alternates/LANDSCAPE_1200/elephant.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Politics · India</span><h2 class="poster-headline">Second attempt to tranquilise wild tusker Chakkakompan underway in Chinnakkanal: Keralam Forest Minister</h2></div><span class="poster-brand">The Hindu</span></div><div class="pure-body"><p class="story-copy">Shibu Baby John says the mission, which began on Wednesday, had to be called off in the evening due to adverse weather conditions.</p><div class="story-foot"><span class="story-source">The Hindu &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://techcrunch.com/2026/11/25/sp-considers-nvidia-credit-downgrade-over-governance-and-key-man-risks/" target="_blank" rel="noopener noreferrer"><div class="poster g4"><img src="https://techcrunch.com/wp-content/uploads/2026/01/GettyImages-2256813240.jpg?resize=1200,800" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Tech · Global</span><h2 class="poster-headline">S&amp;P considers Nvidia credit downgrade over governance and ‘key man’ risks</h2></div><span class="poster-brand">TechCrunch</span></div><div class="pure-body"><p class="story-copy">The credit rating agency may lower Nvidia&#x27;s credit rating to AA-, the fourth-highest rating.</p><div class="story-foot"><span class="story-source">TechCrunch &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></section>
+<a class="story-link split-row closing" href="https://ppc.land/chatgpt-ads-start-counting-people-as-shein-pays-100m-and-fake-tvs-cost-135m/" target="_blank" rel="noopener noreferrer"><div class="poster g3"><img src="https://ppc.land/content/images/2026/11/ChatGPT-ads-now-count-people-as-SHEIN-pays-the-FTC--100m-and-fake-TVs-cost-advertisers--135m.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Digital Marketing</span><h2 class="poster-headline">ChatGPT ads start counting people as SHEIN pays $100m and fake TVs cost $135m</h2></div><span class="poster-brand">PPC Land</span></div><div class="split-right"><div class="split-index">10 &middot; Digital Marketing</div><div class="split-copy-box"><p class="story-copy">OpenAI added reach metrics to ChatGPT ads, the FTC settled with SHEIN for $100m, Pixalate priced a fake TV fraud at $135m and Amazon Autos headed to the UK.</p><div class="story-foot"><span class="story-source">PPC Land &middot; Nov 26, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></div></a>
+</main></body></html>
