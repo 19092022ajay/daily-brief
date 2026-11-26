@@ -1,40 +1,75 @@
 #!/usr/bin/env python3
-"""Builds the daily news brief page from free RSS feeds. Python standard library only."""
-import sys, re, html, json, datetime as dt, urllib.request, xml.etree.ElementTree as ET
+"""Daily news brief: topic sections, each with India (domestic) + Global stories.
+Free RSS feeds only. Python standard library only."""
+import sys, re, html, datetime as dt, urllib.request, xml.etree.ElementTree as ET
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 HERE = Path(__file__).parent
 IST = dt.timezone(dt.timedelta(hours=5, minutes=30))
 UA = {"User-Agent": "Mozilla/5.0 (compatible; DailyBriefBot/1.0)"}
-MAX_AGE_HOURS = 72
-BREAKING_WORDS = ("breaking", "just in", "urgent", "live updates")
+MAX_AGE_HOURS = 72          # ignore stories older than this
+BREAKING_HOURS = 12         # a story must be this fresh to be "Breaking"
+MAX_BREAKING = 3
 
-# (label, source name, feed URL). Edit freely: add, remove or swap feeds.
-SLOTS = [
-    ("Business · Global",     "BBC News",         "http://feeds.bbci.co.uk/news/business/rss.xml"),
-    ("Markets · India",       "Economic Times",   "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms"),
-    ("Investing · Global",    "CNBC",             "https://www.cnbc.com/id/10000664/device/rss/rss.html"),
-    ("Economics · India",     "Economic Times",   "https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms"),
-    ("Economics · Global",    "The Guardian",     "https://www.theguardian.com/business/economics/rss"),
-    ("Geopolitics · Global",  "BBC News",         "http://feeds.bbci.co.uk/news/world/rss.xml"),
-    ("Politics · India",      "The Hindu",        "https://www.thehindu.com/news/national/feeder/default.rss"),
-    ("Politics · Global",     "The Guardian",     "https://www.theguardian.com/us-news/us-politics/rss"),
-    ("Tech · Global",         "TechCrunch",       "https://techcrunch.com/feed/"),
-    ("Digital Marketing",     "PPC Land",         "https://ppc.land/feed/"),
+# ---- EDIT HERE: topics, and the feeds for each region (first working feed wins) ----
+TOPICS = [
+  ("Business", [
+    ("India",  [("The Hindu BusinessLine", "https://www.thehindubusinessline.com/feeder/default.rss"),
+                ("Indian Express", "https://indianexpress.com/section/business/feed/")]),
+    ("Global", [("BBC News", "http://feeds.bbci.co.uk/news/business/rss.xml"),
+                ("The Guardian", "https://www.theguardian.com/uk/business/rss")])]),
+  ("Markets", [
+    ("India",  [("Economic Times", "https://economictimes.indiatimes.com/markets/rssfeeds/1977021501.cms"),
+                ("Indian Express", "https://indianexpress.com/section/business/feed/")]),
+    ("Global", [("CNBC", "https://www.cnbc.com/id/20910258/device/rss/rss.html"),
+                ("BBC News", "http://feeds.bbci.co.uk/news/business/rss.xml")])]),
+  ("Economics", [
+    ("India",  [("Economic Times", "https://economictimes.indiatimes.com/news/economy/rssfeeds/1373380680.cms"),
+                ("The Hindu", "https://www.thehindu.com/business/Economy/feeder/default.rss")]),
+    ("Global", [("The Guardian", "https://www.theguardian.com/business/economics/rss"),
+                ("CNBC", "https://www.cnbc.com/id/20910258/device/rss/rss.html")])]),
+  ("Geopolitics", [
+    ("India",  [("The Hindu", "https://www.thehindu.com/news/international/feeder/default.rss"),
+                ("Indian Express", "https://indianexpress.com/section/world/feed/")]),
+    ("Global", [("BBC News", "http://feeds.bbci.co.uk/news/world/rss.xml"),
+                ("The Guardian", "https://www.theguardian.com/world/rss")])]),
+  ("Politics", [
+    ("India",  [("The Hindu", "https://www.thehindu.com/news/national/feeder/default.rss"),
+                ("Indian Express", "https://indianexpress.com/section/india/feed/")]),
+    ("Global", [("The Guardian", "https://www.theguardian.com/us-news/us-politics/rss"),
+                ("BBC News", "http://feeds.bbci.co.uk/news/politics/rss.xml")])]),
+  ("Tech", [
+    ("India",  [("Economic Times", "https://economictimes.indiatimes.com/tech/rssfeeds/13357270.cms"),
+                ("Indian Express", "https://indianexpress.com/section/technology/feed/")]),
+    ("Global", [("TechCrunch", "https://techcrunch.com/feed/"),
+                ("The Verge", "https://www.theverge.com/rss/index.xml")])]),
+  ("Investing & Finance", [
+    ("India",  [("Economic Times", "https://economictimes.indiatimes.com/wealth/rssfeeds/837555174.cms"),
+                ("Mint", "https://www.livemint.com/rss/money")]),
+    ("Global", [("CNBC", "https://www.cnbc.com/id/15839069/device/rss/rss.html"),
+                ("The Guardian", "https://www.theguardian.com/business/rss")])]),
+  ("Digital Marketing", [
+    ("India",  [("Social Samosa", "https://www.socialsamosa.com/feed/"),
+                ("Search Engine Land", "https://searchengineland.com/feed")]),
+    ("Global", [("PPC Land", "https://ppc.land/feed/"),
+                ("Search Engine Land", "https://searchengineland.com/feed")])]),
 ]
-# Spare feeds used if a slot's feed is down or empty.
-BACKUP = {
-    "Markets · India": "https://indianexpress.com/section/business/feed/",
-    "Tech · Global": "https://www.theverge.com/rss/index.xml",
-    "Digital Marketing": "https://searchengineland.com/feed",
-}
+# Feeds scanned for Breaking news (top headlines)
+BREAKING_FEEDS = [("BBC News", "http://feeds.bbci.co.uk/news/rss.xml"),
+                  ("The Hindu", "https://www.thehindu.com/feeder/default.rss")]
+BREAKING_WORDS = ("breaking", "just in", "urgent", "flash")
+IMPACT_WORDS = ("killed", "dead", "dies", "attack", "explosion", "earthquake", "crash", "resigns", "resignation",
+                "ceasefire", "invades", "strikes", "collapse", "arrested", "sanctions", "emergency", "rate cut",
+                "rate hike", "plunge", "surge", "default", "shutdown")
+# -------------------------------------------------------------------------------------
+
 NS = {"media": "http://search.yahoo.com/mrss/", "content": "http://purl.org/rss/1.0/modules/content/",
       "atom": "http://www.w3.org/2005/Atom", "dc": "http://purl.org/dc/elements/1.1/"}
+EPOCH = dt.datetime.min.replace(tzinfo=dt.timezone.utc)
 
 def fetch(url, timeout=12):
-    req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=timeout) as r:
+    with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
         return r.read()
 
 def clean(text, limit=230):
@@ -66,7 +101,7 @@ def feed_image(item):
     for el in item.findall("enclosure"):
         if "image" in el.get("type", ""):
             return el.get("url")
-    body = (item.findtext("content:encoded", "", NS) or item.findtext("description") or "")
+    body = item.findtext("content:encoded", "", NS) or item.findtext("description") or ""
     m = re.search(r'<img[^>]+src=["\']([^"\']+)', html.unescape(body))
     return m.group(1) if m else None
 
@@ -79,12 +114,11 @@ def og_image(url):
     except Exception:
         return None
 
-def read_feed(url):
-    root = ET.fromstring(fetch(url))
+def parse_feed(data):
+    root = ET.fromstring(data)
     items = []
     for it in root.iter("item"):
-        link = (it.findtext("link") or "").strip()
-        items.append(dict(title=clean(it.findtext("title"), 140), link=link,
+        items.append(dict(title=clean(it.findtext("title"), 140), link=(it.findtext("link") or "").strip(),
                           summary=clean(it.findtext("description") or it.findtext("content:encoded", "", NS)),
                           date=parse_date(it.findtext("pubDate") or it.findtext("dc:date", "", NS)),
                           image=feed_image(it)))
@@ -93,42 +127,57 @@ def read_feed(url):
         items.append(dict(title=clean(it.findtext("atom:title", "", NS), 140), link=l.get("href") if l is not None else "",
                           summary=clean(it.findtext("atom:summary", "", NS) or it.findtext("atom:content", "", NS)),
                           date=parse_date(it.findtext("atom:updated", "", NS)), image=None))
-    return [i for i in items if i["title"] and i["link"]]
+    items = [i for i in items if i["title"] and i["link"]]
+    items.sort(key=lambda i: i["date"] or EPOCH, reverse=True)
+    return items
 
-def pick(label, source, url, used):
-    now = dt.datetime.now(dt.timezone.utc)
-    for u in (url, BACKUP.get(label)):
-        if not u:
-            continue
-        try:
-            items = read_feed(u)
-        except Exception as e:
-            print(f"[warn] {label}: {u} failed: {e}", file=sys.stderr)
-            continue
-        items.sort(key=lambda i: i["date"] or dt.datetime.min.replace(tzinfo=dt.timezone.utc), reverse=True)
-        for i in items:
-            if i["title"].lower() in used:
-                continue
-            if i["date"] and (now - i["date"]).total_seconds() > MAX_AGE_HOURS * 3600:
-                continue
-            used.add(i["title"].lower())
-            i.update(label=label, source=source)
-            return i
-    return None
+def age_hours(i):
+    return (dt.datetime.now(dt.timezone.utc) - i["date"]).total_seconds() / 3600 if i["date"] else 9999
 
 def is_breaking(i):
     text = (i["title"] + " " + i["summary"]).lower()
-    fresh = i["date"] and (dt.datetime.now(dt.timezone.utc) - i["date"]).total_seconds() < 3 * 3600
-    return any(w in text for w in BREAKING_WORDS) or (fresh and "Geopolitics" in i["label"] and "attack" in text)
+    if age_hours(i) > BREAKING_HOURS:
+        return False
+    return any(w in text for w in BREAKING_WORDS) or (age_hours(i) < 6 and any(w in text for w in IMPACT_WORDS))
+
+def pick(feeds, used):
+    for source, url in feeds:
+        try:
+            items = parse_feed(fetch(url))
+        except Exception as e:
+            print(f"[warn] {source} {url}: {e}", file=sys.stderr)
+            continue
+        for i in items:
+            if i["title"].lower() in used or age_hours(i) > MAX_AGE_HOURS:
+                continue
+            used.add(i["title"].lower())
+            i["source"] = source
+            return i
+    return None
+
+def find_breaking(used):
+    found = []
+    for source, url in BREAKING_FEEDS:
+        try:
+            items = parse_feed(fetch(url))[:12]
+        except Exception as e:
+            print(f"[warn] breaking {source}: {e}", file=sys.stderr)
+            continue
+        for i in items:
+            if is_breaking(i) and i["title"].lower() not in used:
+                used.add(i["title"].lower()); i["source"] = source; found.append(i)
+    found.sort(key=lambda i: i["date"] or EPOCH, reverse=True)
+    return found[:MAX_BREAKING]
 
 def esc(s): return html.escape(s or "", quote=True)
+def slug(s): return re.sub(r"[^a-z]+", "-", s.lower()).strip("-")
 
-def poster(i, g, breaking):
-    img = f'<img src="{esc(i["image"])}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">' if i.get("image") else ""
-    label = "Breaking" if breaking else esc(i["label"])
+def poster(i, g, label, breaking):
+    img = (f'<img src="{esc(i["image"])}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">'
+           if i.get("image") else "")
     k = "kicker-breaking" if breaking else "kicker-normal"
     return (f'<div class="poster g{g}">{img}<div class="poster-scrim"></div><div class="poster-top">'
-            f'<span class="kicker {k}">{label}</span><h2 class="poster-headline">{esc(i["title"])}</h2></div>'
+            f'<span class="kicker {k}">{esc(label)}</span><h2 class="poster-headline">{esc(i["title"])}</h2></div>'
             f'<span class="poster-brand">{esc(i["source"])}</span></div>')
 
 def foot(i):
@@ -136,56 +185,50 @@ def foot(i):
     return (f'<div class="story-foot"><span class="story-source">{esc(i["source"])} &middot; {d}</span>'
             f'<span class="story-cta">Read full report &rarr;</span></div>')
 
-def grid_card(i, g):
+def card(i, g, label):
     return (f'<a class="story-link pure-entry" href="{esc(i["link"])}" target="_blank" rel="noopener noreferrer">'
-            f'{poster(i, g, False)}<div class="pure-body"><p class="story-copy">{esc(i["summary"])}</p>{foot(i)}</div></a>')
+            f'{poster(i, g, label, False)}<div class="pure-body"><p class="story-copy">{esc(i["summary"])}</p>{foot(i)}</div></a>')
 
-def split_row(i, g, idx, breaking, closing=False):
-    c = " closing" if closing else ""
-    b = " breaking" if breaking else ""
-    tag = "Breaking" if breaking else esc(i["label"])
-    return (f'<a class="story-link split-row{c}" href="{esc(i["link"])}" target="_blank" rel="noopener noreferrer">'
-            f'{poster(i, g, breaking)}<div class="split-right"><div class="split-index{b}">{idx:02d} &middot; {tag}</div>'
-            f'<div class="split-copy-box{b}"><p class="story-copy">{esc(i["summary"])}</p>{foot(i)}</div></div></a>')
+def breaking_row(i, n):
+    return (f'<a class="story-link split-row" href="{esc(i["link"])}" target="_blank" rel="noopener noreferrer">'
+            f'{poster(i, 1, "Breaking", True)}<div class="split-right"><div class="split-index breaking">{n:02d} &middot; Breaking</div>'
+            f'<div class="split-copy-box breaking"><p class="story-copy">{esc(i["summary"])}</p>{foot(i)}</div></div></a>')
 
-DEMO = [dict(label=l, source=s, title=f"Sample headline for {l}", link="https://example.com",
-             summary="This is a sample summary line that shows how your daily brief will look once real news is pulled in.",
-             date=dt.datetime.now(dt.timezone.utc), image=None) for l, s, _ in SLOTS]
+def demo_item(label):
+    return dict(title=f"Sample headline: {label}", link="https://example.com", source="Sample Source",
+                summary="This is a sample summary line that shows how your daily brief will look once real news is pulled in.",
+                date=dt.datetime.now(dt.timezone.utc), image=None)
 
 def build(demo=False):
-    used, stories = set(), []
-    if demo:
-        stories = [dict(x) for x in DEMO]
-    else:
-        for label, source, url in SLOTS:
-            i = pick(label, source, url, used)
+    used, sections, total = set(), [], 0
+    breaking = [demo_item("Breaking")] if demo else find_breaking(used)
+    if breaking:
+        rows = "".join(breaking_row(i, n + 1) for n, i in enumerate(breaking))
+        sections.append(("Breaking", f'<section class="topic" id="breaking"><h2 class="topic-head breaking">Breaking</h2>{rows}</section>'))
+    for ti, (topic, regions) in enumerate(TOPICS):
+        cards = []
+        for region, feeds in regions:
+            i = demo_item(f"{topic} {region}") if demo else pick(feeds, used)
             if i:
-                stories.append(i)
-    if not stories:
+                cards.append(i); i["label"] = f"{topic} · {region}"
+        if not cards:
+            continue
+        for i in cards:
+            if not i.get("image") and not demo:
+                i["image"] = og_image(i["link"])
+        total += len(cards)
+        body = "".join(card(i, (ti + n) % 6 + 1, i["label"]) for n, i in enumerate(cards))
+        sections.append((topic, f'<section class="topic" id="{slug(topic)}"><h2 class="topic-head"><span>{esc(topic)}</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid">{body}</div></section>'))
+    if not sections:
         raise SystemExit("No stories fetched; keeping the previous page.")
-    for i in stories:
-        if not i.get("image") and not demo:
-            i["image"] = og_image(i["link"])
-    flags = [is_breaking(i) for i in stories]
-    hero = flags.index(True) if True in flags else 0
-    order = [hero] + [n for n in range(len(stories)) if n != hero]
-    stories = [stories[n] for n in order]; flags = [flags[n] for n in order]
-    parts, n, gi = [split_row(stories[0], 1, 1, flags[0])], 1, 2
-    rest = stories[1:]; rflags = flags[1:]
-    closing = None
-    if len(rest) % 2 == 1:
-        closing = (rest.pop(), rflags.pop())
-    for k in range(0, len(rest), 2):
-        parts.append('<section class="pure-grid">' + grid_card(rest[k], gi % 6 + 1) + grid_card(rest[k + 1], (gi + 1) % 6 + 1) + '</section>')
-        gi += 2
-    if closing:
-        parts.append(split_row(closing[0], 3, len(stories), closing[1], closing=True))
+    nav = '<nav class="topnav">' + "".join(f'<a href="#{slug(t)}">{esc(t)}</a>' for t, _ in sections) + "</nav>"
     date = dt.datetime.now(IST).strftime("%A, %d %B %Y")
-    page = (HERE / "template.html").read_text(encoding="utf-8").replace("{{DATE}}", date).replace("{{CONTENT}}", "\n".join(parts))
+    page = (HERE / "template.html").read_text(encoding="utf-8").replace("{{DATE}}", date) \
+        .replace("{{CONTENT}}", nav + "\n" + "\n".join(s for _, s in sections))
     out = HERE / "docs"; (out / "archive").mkdir(parents=True, exist_ok=True)
     (out / "index.html").write_text(page, encoding="utf-8")
     (out / "archive" / f"{dt.datetime.now(IST):%Y-%m-%d}.html").write_text(page, encoding="utf-8")
-    print(f"Built {len(stories)} stories for {date}")
+    print(f"Built {total} topic stories + {len(breaking)} breaking for {date}")
 
 if __name__ == "__main__":
     build(demo="--demo" in sys.argv)
