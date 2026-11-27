@@ -68,6 +68,10 @@ NS = {"media": "http://search.yahoo.com/mrss/", "content": "http://purl.org/rss/
       "atom": "http://www.w3.org/2005/Atom", "dc": "http://purl.org/dc/elements/1.1/"}
 EPOCH = dt.datetime.min.replace(tzinfo=dt.timezone.utc)
 
+# index.html is a tiny loader: on every visit it fetches the newest brief.html with a unique
+# query string, so the browser never shows an old saved copy.
+LOADER = """<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Daily Brief</title><noscript><meta http-equiv="refresh" content="0; url=brief.html"></noscript></head><body style="font-family:sans-serif;padding:40px;color:#525252">Loading today's brief…<script>fetch("brief.html?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(h){document.open();document.write(h);document.close()}).catch(function(){location.replace("brief.html?t="+Date.now())})</script></body></html>"""
+
 def fetch(url, timeout=12):
     with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=timeout) as r:
         return r.read()
@@ -226,7 +230,8 @@ def build(demo=False):
     page = (HERE / "template.html").read_text(encoding="utf-8").replace("{{DATE}}", date) \
         .replace("{{CONTENT}}", nav + "\n" + "\n".join(s for _, s in sections))
     out = HERE / "docs"; (out / "archive").mkdir(parents=True, exist_ok=True)
-    (out / "index.html").write_text(page, encoding="utf-8")
+    (out / "brief.html").write_text(page, encoding="utf-8")
+    (out / "index.html").write_text(LOADER, encoding="utf-8")
     (out / "archive" / f"{dt.datetime.now(IST):%Y-%m-%d}.html").write_text(page, encoding="utf-8")
     print(f"Built {total} topic stories + {len(breaking)} breaking for {date}")
 
