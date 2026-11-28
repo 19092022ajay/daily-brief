@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Brief · Saturday, 28 November 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #FFFFFF;
+      --ink: #0A0A0A;
+      --body: #262626;
+      --muted: #525252;
+      --rule: #E2E5EA;
+      --breaking: #D90429;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 36px 32px 84px;
+    }
+
+    .masthead {
+      border-bottom: 1px solid var(--ink);
+      padding: 16px 0 14px;
+      margin-bottom: 40px;
+    }
+
+    .masthead h1 {
+      margin: 0;
+      font-size: clamp(22px, 2.8vw, 30px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .poster {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background: #0A0C10;
+    }
+
+    .poster.g1{background:linear-gradient(160deg,#1b2a41,#0A0C10)}.poster.g2{background:linear-gradient(160deg,#3a1c1c,#0A0C10)}.poster.g3{background:linear-gradient(160deg,#14332b,#0A0C10)}.poster.g4{background:linear-gradient(160deg,#2b2347,#0A0C10)}.poster.g5{background:linear-gradient(160deg,#3b2f14,#0A0C10)}.poster.g6{background:linear-gradient(160deg,#10333f,#0A0C10)}
+    .poster img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .story-link:hover .poster img { transform: scale(1.03); }
+
+    .poster-scrim {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        ellipse 82% 62% at 14% 16%,
+        rgba(0, 0, 0, 0.44) 0%,
+        rgba(0, 0, 0, 0.14) 55%,
+        rgba(0, 0, 0, 0) 100%
+      );
+      pointer-events: none;
+    }
+
+    .poster-top {
+      position: absolute;
+      top: 6.5%;
+      left: 6%;
+      right: 16%;
+      z-index: 2;
+    }
+
+    .kicker {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      margin-bottom: 10px;
+      line-height: 1;
+    }
+
+    .kicker-breaking { background: var(--breaking); color: #FFFFFF; }
+    .kicker-normal { background: #0A0A0A; color: #FFFFFF; }
+
+    .poster-headline {
+      margin: 0;
+      color: #FFFFFF;
+      font-size: clamp(23px, 2.5vw, 32px);
+      font-weight: 700;
+      line-height: 1.05;
+      letter-spacing: -0.04em;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.36);
+    }
+
+    .poster-brand {
+      position: absolute;
+      right: 5.5%;
+      bottom: 4.5%;
+      z-index: 2;
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
+    }
+
+    .split-row {
+      display: grid;
+      grid-template-columns: 400px 1fr;
+      gap: 44px;
+      align-items: center;
+      padding-bottom: 44px;
+      margin-bottom: 44px;
+      border-bottom: 1px solid var(--rule);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .split-row.closing {
+      padding-top: 44px;
+      padding-bottom: 24px;
+      margin-bottom: 0;
+      border-top: 1px solid var(--rule);
+    }
+
+    .split-index {
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .split-index.breaking { color: var(--breaking); }
+
+    .split-copy-box {
+      border-left: 3px solid var(--ink);
+      padding-left: 22px;
+    }
+
+    .split-copy-box.breaking { border-left-color: var(--breaking); }
+
+    .pure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 44px;
+      row-gap: 44px;
+      margin-bottom: 44px;
+    }
+
+    .pure-entry {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .pure-body {
+      padding-top: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .story-copy {
+      margin: 0;
+      font-size: 15px;
+      line-height: 1.62;
+      color: var(--body);
+    }
+
+    .story-foot {
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+    }
+
+    .story-source { font-weight: 600; color: var(--muted); }
+    .story-cta { font-weight: 700; color: var(--ink); }
+    .story-link:hover .story-cta { text-decoration: underline; text-underline-offset: 3px; }
+
+    .topnav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin: -14px 0 34px; font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; }
+    .topnav a { color: var(--muted); text-decoration: none; }
+    .topnav a:hover { color: var(--ink); }
+    .topic { margin-bottom: 20px; scroll-margin-top: 16px; }
+    .topic-head { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 22px; padding-bottom: 10px; border-bottom: 3px solid var(--ink); font-size: 13px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; }
+    .topic-head.breaking { border-bottom-color: var(--breaking); color: var(--breaking); }
+    .head-note { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; color: var(--muted); }
+    @media (max-width: 767px) {
+      .shell { padding: 0 0 56px; }
+      .masthead { padding: 16px 20px 14px; margin-bottom: 0; }
+      .split-row, .split-row.closing {
+        grid-template-columns: 1fr;
+        gap: 0;
+        padding: 0 0 28px;
+        margin-bottom: 0;
+        border-top: 0;
+        border-bottom: 1px solid var(--rule);
+      }
+      .split-right, .pure-body { padding: 18px 20px 0; }
+      .split-index { display: none; }
+      .split-copy-box { border-left: 0; padding-left: 0; }
+      .pure-grid { grid-template-columns: 1fr; row-gap: 0; margin-bottom: 0; }
+      .pure-entry { padding-bottom: 28px; border-bottom: 1px solid var(--rule); }
+      .poster-headline { font-size: 27px; }
+      .topnav { margin: 16px 20px 24px; }
+      .topic { margin-top: 28px; margin-bottom: 0; }
+      .topic-head { margin: 0 20px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell"><header class="masthead"><h1>Saturday, 28 November 2026</h1></header>
+<nav class="topnav"><a href="#breaking">Breaking</a><a href="#business">Business</a><a href="#markets">Markets</a><a href="#economics">Economics</a><a href="#geopolitics">Geopolitics</a><a href="#politics">Politics</a><a href="#tech">Tech</a><a href="#investing-finance">Investing &amp; Finance</a><a href="#digital-marketing">Digital Marketing</a></nav>
+<section class="topic" id="breaking"><h2 class="topic-head breaking">Breaking</h2><a class="story-link split-row" href="https://www.thehindu.com/news/national/uttar-pradesh/centres-delimitation-fix-steadies-yogi-adityanaths-nerves-ahead-of-polls/article71753568.ece" target="_blank" rel="noopener noreferrer"><div class="poster g1"><img src="https://th-i.thgim.com/public/incoming/qzs59l/article71753577.ece/alternates/LANDSCAPE_1200/PTI11_21_2026_000280B.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-breaking">Breaking</span><h2 class="poster-headline">Centre’s delimitation fix steadies Yogi Adityanath’s nerves ahead of polls</h2></div><span class="poster-brand">The Hindu</span></div><div class="split-right"><div class="split-index breaking">01 &middot; Breaking</div><div class="split-copy-box breaking"><p class="story-copy">By raising the constitutional ceiling on State assemblies from 500 to 650 seats, the Union Cabinet’s revised delimitation bill allows U.P. assembly to expand to 605 members without dividing the State</p><div class="story-foot"><span class="story-source">The Hindu &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></div></a><a class="story-link split-row" href="https://www.thehindu.com/news/international/putin-unveils-new-nuclear-submarine/article71753555.ece" target="_blank" rel="noopener noreferrer"><div class="poster g1"><img src="https://th-i.thgim.com/public/incoming/cjpm1t/article71753564.ece/alternates/LANDSCAPE_1200/Russia_Putin_51393.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-breaking">Breaking</span><h2 class="poster-headline">Putin unveils new nuclear submarine</h2></div><span class="poster-brand">The Hindu</span></div><div class="split-right"><div class="split-index breaking">02 &middot; Breaking</div><div class="split-copy-box breaking"><p class="story-copy">Nuclear-powered submarines are a key part of Russia&#x27;s nuclear deterrent because their ability to operate covertly underwater ensures a retaliatory strike capability in the event of an attack</p><div class="story-foot"><span class="story-source">The Hindu &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></div></a><a class="story-link split-row" href="https://www.thehindu.com/news/the-hindu-morning-digest-november-28-2026/article71752254.ece" target="_blank" rel="noopener noreferrer"><div class="poster g1"><img src="https://th-i.thgim.com/public/incoming/zarshs/article71747086.ece/alternates/LANDSCAPE_1200/Uncertainty-oveGDHGRKK49.4.jpg.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-breaking">Breaking</span><h2 class="poster-headline">Morning Digest: Centre proposes freeze on Lok Sabha seat proportions for States until 2051; TVK MLA Arul Vignesh arrested; and more</h2></div><span class="poster-brand">The Hindu</span></div><div class="split-right"><div class="split-index breaking">03 &middot; Breaking</div><div class="split-copy-box breaking"><p class="story-copy">Here is a select list of stories to start the day.</p><div class="story-foot"><span class="story-source">The Hindu &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></div></a></section>
+<section class="topic" id="business"><h2 class="topic-head"><span>Business</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid"><a class="story-link pure-entry" href="https://www.thehindubusinessline.com/news/why-scientists-say-cop31-fell-short-and-what-must-follow/article71753545.ece" target="_blank" rel="noopener noreferrer"><div class="poster g1"><img src="https://bl-i.thgim.com/public/incoming/vobsbj/article71753570.ece/alternates/LANDSCAPE_1200/2026-11-19T105448Z_776698160_RC2XQOAXCYO6_RTRMADP_3_CLIMATE-COP31.JPG" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Business · India</span><h2 class="poster-headline">Why scientists say COP31 fell short and what must follow</h2></div><span class="poster-brand">The Hindu BusinessLine</span></div><div class="pure-body"><p class="story-copy">Many experts see the lack of consensus at COP31 as a hard reality check for a climate action process that isn’t delivering at the pace and scale the crisis demands</p><div class="story-foot"><span class="story-source">The Hindu BusinessLine &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://www.bbc.co.uk/news/videos/cwjd7y4jk581o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer"><div class="poster g2"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/2e16/live/61435b70-ea7a-11f1-99b6-a35a62fa4264.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Business · Global</span><h2 class="poster-headline">Will new energy fixes cost more in January?</h2></div><span class="poster-brand">BBC News</span></div><div class="pure-body"><p class="story-copy">Energy bills will soar by 26% for millions of households in January after a surge in gas prices sparked by the Iran war.</p><div class="story-foot"><span class="story-source">BBC News &middot; Nov 27, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></div></section>
+<section class="topic" id="markets"><h2 class="topic-head"><span>Markets</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid"><a class="story-link pure-entry" href="https://economictimes.indiatimes.com/markets/commodities/news/gold-pares-gains-as-fed-hike-risks-linger-eyes-first-weekly-rise-in-three-weeks/articleshow/136237788.cms" target="_blank" rel="noopener noreferrer"><div class="poster g2"><img src="https://img.etimg.com/photo/msid-136237788,imgsize-181844.cms" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Markets · India</span><h2 class="poster-headline">Gold pares gains as Fed hike risks linger, eyes first weekly rise in three weeks</h2></div><span class="poster-brand">Economic Times</span></div><div class="pure-body"><p class="story-copy">Gold prices saw a notable uptick as investors seized the opportunity for bargain purchases, despite a robust US dollar and escalating yields causing some hesitance.</p><div class="story-foot"><span class="story-source">Economic Times &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://www.cnbc.com/2026/11/25/holiday-inflation-thanksgiving-travel-food-gifts.html" target="_blank" rel="noopener noreferrer"><div class="poster g3"><img src="https://image.cnbcfm.com/api/v1/image/108560331-1795815908700-gettyimages-2306543995-BLACK_FRIDAY_SHOPPING.jpeg?v=1795815925&amp;w=1920&amp;h=1080" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Markets · Global</span><h2 class="poster-headline">Even the price of toys is on the rise. How Americans are scaling back holiday plans</h2></div><span class="poster-brand">CNBC</span></div><div class="pure-body"><p class="story-copy">U.S. consumers face higher food, travel and gift costs in 2026 as inflation and Iran-war energy shocks pressure holiday budgets.</p><div class="story-foot"><span class="story-source">CNBC &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></div></section>
+<section class="topic" id="economics"><h2 class="topic-head"><span>Economics</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid"><a class="story-link pure-entry" href="https://economictimes.indiatimes.com/news/economy/policy/et-india-ascends-tiny-shops-big-dreams-unlocking-the-true-potential-of-indias-msmes/articleshow/136232258.cms" target="_blank" rel="noopener noreferrer"><div class="poster g3"><img src="https://img.etimg.com/photo/msid-136232258,imgsize-120638.cms" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Economics · India</span><h2 class="poster-headline">ET India Ascends: Tiny shops, big dreams — unlocking the true potential of India&#x27;s MSMEs</h2></div><span class="poster-brand">Economic Times</span></div><div class="pure-body"><p class="story-copy">India&#x27;s unincorporated MSME sector is witnessing faster productivity growth and narrowing regional disparities, with manufacturing recording the biggest gains, according to four rounds of ASUSE data.</p><div class="story-foot"><span class="story-source">Economic Times &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://www.theguardian.com/us-news/2026/nov/26/trump-fake-economic-figures-midterms" target="_blank" rel="noopener noreferrer"><div class="poster g4"><img src="https://i.guim.co.uk/img/media/986e893adee7d4a82d2b268d1a05cd0fa6d2fe28/87_218_2920_2337/master/2920.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=258e262e8de5f65cfec8ee392a62440a" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Economics · Global</span><h2 class="poster-headline">Trump alleges ‘fake’ economic figures released before US midterms but doesn’t provide evidence</h2></div><span class="poster-brand">The Guardian</span></div><div class="pure-body"><p class="story-copy">In a bitter Thanksgiving post, president seeks investigation after blue wave of Democrats unseated Republicans Donald Trump has alleged without evidence that economic figures published by the US federal government before this…</p><div class="story-foot"><span class="story-source">The Guardian &middot; Nov 27, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></div></section>
+<section class="topic" id="geopolitics"><h2 class="topic-head"><span>Geopolitics</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid"><a class="story-link pure-entry" href="https://www.thehindu.com/news/international/taiwan-votes-in-key-local-elections-as-china-looks-on/article71753506.ece" target="_blank" rel="noopener noreferrer"><div class="poster g4"><img src="https://th-i.thgim.com/public/incoming/mupmcb/article71753509.ece/alternates/LANDSCAPE_1200/Taiwan_Election_73887.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Geopolitics · India</span><h2 class="poster-headline">Taiwan votes in key local elections as China looks on</h2></div><span class="poster-brand">The Hindu</span></div><div class="pure-body"><p class="story-copy">Campaigning in the races in all of Taiwan&#x27;s ‌22 cities and counties focused on local issues such as transport and the environment; But while the results will not directly affect China ‌policy, Beijing has repeatedly weighed in</p><div class="story-foot"><span class="story-source">The Hindu &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://www.bbc.co.uk/news/articles/cwp9d85mlp88o?at_medium=RSS&amp;at_campaign=rss" target="_blank" rel="noopener noreferrer"><div class="poster g5"><img src="https://ichef.bbci.co.uk/ace/standard/240/cpsprodpb/faea/live/b54be270-eadc-11f1-81da-2ff518b71d00.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Geopolitics · Global</span><h2 class="poster-headline">Eight killed in Peruvian military helicopter crash</h2></div><span class="poster-brand">BBC News</span></div><div class="pure-body"><p class="story-copy">The pilot was the sole survivor of the crash during a rescue mission in a remote area known for drug trafficking.</p><div class="story-foot"><span class="story-source">BBC News &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></div></section>
+<section class="topic" id="politics"><h2 class="topic-head"><span>Politics</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid"><a class="story-link pure-entry" href="https://www.thehindu.com/news/national/tamil-nadu/kallakurichi-mla-woman-ias-officer-sexual-harassment-case-timeline-of-key-developments/article71746164.ece" target="_blank" rel="noopener noreferrer"><div class="poster g5"><img src="https://th-i.thgim.com/public/incoming/cig4dc/article71748022.ece/alternates/LANDSCAPE_1200/KALLAKURICHI-MLA.JPG" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Politics · India</span><h2 class="poster-headline">Sexual harassment case against Kallakurichi MLA by IAS officer in Tamil Nadu: a timeline</h2></div><span class="poster-brand">The Hindu</span></div><div class="pure-body"><p class="story-copy">Here’s a timeline of how the Kallakurichi MLA-IAS officer row in Tamil Nadu unfolded, the Opposition’s charges and more</p><div class="story-foot"><span class="story-source">The Hindu &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://www.theguardian.com/commentisfree/2026/nov/27/the-explosion-of-extreme-wealth-is-the-major-problem-of-our-time" target="_blank" rel="noopener noreferrer"><div class="poster g6"><img src="https://i.guim.co.uk/img/media/ebf5a271f7a37c05df6ac1f3eb3bf728d51e5332/153_0_5000_4000/master/5000.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=33215f1f6faa847f34bbf9e7cfce789a" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Politics · Global</span><h2 class="poster-headline">The explosion of extreme wealth is the major problem of our time | Bernie Sanders</h2></div><span class="poster-brand">The Guardian</span></div><div class="pure-body"><p class="story-copy">At this pivotal moment in American history, let us move forward together to take on and defeat a powerful, greedy and corrupt ruling class We are at a pivotal moment in history.</p><div class="story-foot"><span class="story-source">The Guardian &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></div></section>
+<section class="topic" id="tech"><h2 class="topic-head"><span>Tech</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid"><a class="story-link pure-entry" href="https://economictimes.indiatimes.com/tech/artificial-intelligence/japans-jera-enters-talks-with-anthropic-meta-to-build-data-centres/articleshow/136210887.cms" target="_blank" rel="noopener noreferrer"><div class="poster g6"><img src="https://img.etimg.com/photo/msid-136210887,imgsize-50452.cms" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Tech · India</span><h2 class="poster-headline">Japan&#x27;s JERA enters talks with Anthropic, Meta to build data centres</h2></div><span class="poster-brand">Economic Times</span></div><div class="pure-body"><p class="story-copy">JERA, Japan&#x27;s leading power generator, is actively engaging with prominent U.S. tech corporations to establish advanced data centers adjacent to its Tokyo-area plants.</p><div class="story-foot"><span class="story-source">Economic Times &middot; Nov 27, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://techcrunch.com/2026/11/26/nvidia-hits-pause-on-chip-shipments-to-southeast-asia/" target="_blank" rel="noopener noreferrer"><div class="poster g1"><img src="https://techcrunch.com/wp-content/uploads/2026/11/Taiwan-Nvidia.jpg?w=1024" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Tech · Global</span><h2 class="poster-headline">Nvidia hits pause on chip shipments to Southeast Asia</h2></div><span class="poster-brand">TechCrunch</span></div><div class="pure-body"><p class="story-copy">Nvidia has told manufacturing partners to pause server shipments to Malaysia, Singapore, Thailand and Indonesia as the U.S. tightens its push to keep AI chips out of China.</p><div class="story-foot"><span class="story-source">TechCrunch &middot; Nov 27, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></div></section>
+<section class="topic" id="investing-finance"><h2 class="topic-head"><span>Investing &amp; Finance</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid"><a class="story-link pure-entry" href="https://economictimes.indiatimes.com/wealth/invest/gold-rate-today-check-24k-22k-20k-18k-gold-prices-in-chennai-delhi-mumbai-hyderabad-other-cities/slideshow/136217252.cms" target="_blank" rel="noopener noreferrer"><div class="poster g1"><img src="https://img.etimg.com/photo/msid-136217163,imgsize-112324.cms" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Investing &amp; Finance · India</span><h2 class="poster-headline">Gold rate today: Check 24K, 22K, 20K, 18K gold prices in Chennai, Delhi, Mumbai, Hyderabad &amp; other cities</h2></div><span class="poster-brand">Economic Times</span></div><div class="pure-body"><p class="story-copy"></p><div class="story-foot"><span class="story-source">Economic Times &middot; Nov 27, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a><a class="story-link pure-entry" href="https://www.cnbc.com/2026/11/25/nvidias-billion-dollar-board-bet-whos-protected-as-lawsuits-mount.html" target="_blank" rel="noopener noreferrer"><div class="poster g2"><img src="https://image.cnbcfm.com/api/v1/image/108553117-1794927200120-gettyimages-2305495779-vcg111682688775.jpeg?v=1794927260&amp;w=1920&amp;h=1080" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Investing &amp; Finance · Global</span><h2 class="poster-headline">Nvidia&#x27;s billion-dollar board bet: Who&#x27;s protected as lawsuits mount?</h2></div><span class="poster-brand">CNBC</span></div><div class="pure-body"><p class="story-copy">Nvidia&#x27;s board is under investigation, and directors are already defendants in a shareholder lawsuit accusing them of failing to properly oversee the company.</p><div class="story-foot"><span class="story-source">CNBC &middot; Nov 27, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></div></section>
+<section class="topic" id="digital-marketing"><h2 class="topic-head"><span>Digital Marketing</span><span class="head-note">India &middot; Global</span></h2><div class="pure-grid"><a class="story-link pure-entry" href="https://ppc.land/converted-product-parent-id/" target="_blank" rel="noopener noreferrer"><div class="poster g2"><img src="https://ppc.land/content/images/2026/11/amazon-unified-reporting-converted-product-parent-id-shoe-tree-basket.jpg" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"><div class="poster-scrim"></div><div class="poster-top"><span class="kicker kicker-normal">Digital Marketing · Global</span><h2 class="poster-headline">Converted product parent ID</h2></div><span class="poster-brand">PPC Land</span></div><div class="pure-body"><p class="story-copy">Converted product parent ID is an Amazon Ads unified reporting field giving the parent ASIN of the product bought after an ad, grouping its sizes and colours.</p><div class="story-foot"><span class="story-source">PPC Land &middot; Nov 28, 2026</span><span class="story-cta">Read full report &rarr;</span></div></div></a></div></section>
+</main></body></html>
